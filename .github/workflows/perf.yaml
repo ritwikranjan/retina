@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   perf_test:
-    if: ${{ github.event != 'workflow_run' || github.event_name == 'merge_group' }}
+    if: ${{ github.event_name != 'workflow_run' || github.event_name == 'merge_group' }}
     name: Retina Performance Test
     runs-on: ubuntu-latest
 
@@ -49,7 +49,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ github.event }}" == "workflow_dispatch" ]; then
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             TAG=${{ github.event.inputs.tag }}
           elif [ "${{ github.event_name }}" == "merge_group" ]; then
             TAG=$(make version)
