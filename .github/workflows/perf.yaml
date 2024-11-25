@@ -56,4 +56,4 @@ jobs:
           else
             TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           fi
-          go test -v ./test/e2e/. -timeout 2h -tags=perf -count=1 -args -image-tag=$TAG -image-registry=${{ vars.ACR_NAME }} -image-namespace=${{ github.repository }}
+          go test -v ./test/e2e/. -timeout 2h -tags=perf -count=1 -args -image-tag=$TAG -image-registry=${{ vars.ACR_NAME }} -image-namespace=microsoft/retina
