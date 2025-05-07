@@ -1281,8 +1281,8 @@ github.com/redis/go-redis/extra/redisotel/v9 v9.7.1 h1:LJF39lvUagUpKfL2/gZIp5vHv
 github.com/redis/go-redis/extra/redisotel/v9 v9.7.1/go.mod h1:VAY1vDpD/dLwfw/wU5SsexXNhCO9DjhRoGkmJeFONoE=
 github.com/redis/go-redis/v9 v9.7.3 h1:YpPyAayJV+XErNsatSElgRZZVCwXX9QzkKYNvO7x0wM=
 github.com/redis/go-redis/v9 v9.7.3/go.mod h1:bGUrSggJ9X9GUmZpZNEOQKaANxSGgOEBRltRTZHSvrA=
-github.com/ritwikranjan/ethtool v0.0.0-20250506155510-bafecb67c08a h1:W63r8v+yamosoUOSsAwPPH4RfpttdQF10/NqaynmB2c=
-github.com/ritwikranjan/ethtool v0.0.0-20250506155510-bafecb67c08a/go.mod h1:w9jh2Lx7YBR4UwzLkzCmWl85UY0W2uZdd7/DckVE5+c=
+github.com/ritwikranjan/ethtool v0.0.0-20250507103407-06f55ef71cc8 h1:RDUv1Cc6+0y01bXAUHAIOJmAv6drqzB41ePgHW6pd74=
+github.com/ritwikranjan/ethtool v0.0.0-20250507103407-06f55ef71cc8/go.mod h1:w9jh2Lx7YBR4UwzLkzCmWl85UY0W2uZdd7/DckVE5+c=
 github.com/rivo/uniseg v0.1.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=

@@ -669,7 +669,7 @@ replace k8s.io/perf-tests/network/benchmarks/netperf => github.com/Azure/perf-te
 
 replace go.universe.tf/metallb => github.com/cilium/metallb v0.1.1-0.20220829170633-5d7dfb1129f7
 
-replace github.com/safchain/ethtool => github.com/ritwikranjan/ethtool v0.0.0-20250506155510-bafecb67c08a
+replace github.com/safchain/ethtool => github.com/ritwikranjan/ethtool v0.0.0-20250507103407-06f55ef71cc8
 
 tool (
 	github.com/cilium/ebpf/cmd/bpf2go

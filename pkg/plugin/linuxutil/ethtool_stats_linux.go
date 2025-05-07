@@ -20,9 +20,17 @@ type EthtoolReader struct {
 	opts      *EthtoolOpts
 	data      *EthtoolStats
 	ethHandle EthtoolInterface
+	gstring   *ethtool.EthtoolGStrings
+	stats     *ethtool.EthtoolStats
 }
 
-func NewEthtoolReader(opts *EthtoolOpts, ethHandle EthtoolInterface, unsupportedInterfacesCache *lru.Cache[string, struct{}]) *EthtoolReader {
+func NewEthtoolReader(
+	opts *EthtoolOpts,
+	ethHandle EthtoolInterface,
+	unsupportedInterfacesCache *lru.Cache[string, struct{}],
+	gstrings *ethtool.EthtoolGStrings,
+	stats *ethtool.EthtoolStats,
+) *EthtoolReader {
 	if ethHandle == nil {
 		var err error
 		ethHandle, err = ethtool.NewEthtool()
@@ -38,6 +46,8 @@ func NewEthtoolReader(opts *EthtoolOpts, ethHandle EthtoolInterface, unsupported
 		opts:      opts,
 		data:      &EthtoolStats{},
 		ethHandle: CachedEthHandle,
+		gstring:   gstrings,
+		stats:     stats,
 	}
 }
 
@@ -73,7 +83,7 @@ func (er *EthtoolReader) readInterfaceStats() error {
 		}
 
 		// Retrieve tx from eth0
-		ifaceStats, err := er.ethHandle.Stats(i.Name)
+		ifaceStats, err := er.ethHandle.StatsWithBuffer(i.Name, er.gstring, er.stats)
 		if err != nil {
 			if errors.Is(err, errskip) {
 				er.l.Debug("Skipping unsupported interface", zap.String("ifacename", i.Name))

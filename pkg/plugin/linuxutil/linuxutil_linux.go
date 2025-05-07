@@ -7,6 +7,7 @@ package linuxutil
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	hubblev1 "github.com/cilium/cilium/pkg/hubble/api/v1"
@@ -68,12 +69,10 @@ func (lu *linuxUtil) run(ctx context.Context) error {
 		return err
 	}
 
-	ethHandle, err := ethtool.NewEthtool()
-	if err != nil {
-		lu.l.Error("Error while creating ethHandle: %v\n", zap.Error(err))
-		return fmt.Errorf("failed to create ethHandle: %w", err)
-	}
-	defer ethHandle.Close()
+	gstrings := new(ethtool.EthtoolGStrings)
+	stats := new(ethtool.EthtoolStats)
+
+	// create a new ethtool handle
 
 	ticker := time.NewTicker(lu.cfg.MetricsInterval)
 	defer ticker.Stop()
@@ -90,31 +89,48 @@ func (lu *linuxUtil) run(ctx context.Context) error {
 				ListenSock:       false,
 				PrevTCPSockStats: lu.prevTCPSockStats,
 			}
+			var wg sync.WaitGroup
 
 			ns := &Netstat{}
 			nsReader := NewNetstatReader(opts, ns)
-
-			tcpSocketStats, err := nsReader.readAndUpdate()
-			if err != nil {
-				lu.l.Error("Reading netstat failed", zap.Error(err))
-			}
-			lu.prevTCPSockStats = tcpSocketStats
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				tcpSocketStats, err := nsReader.readAndUpdate()
+				if err != nil {
+					lu.l.Error("Reading netstat failed", zap.Error(err))
+				}
+				lu.prevTCPSockStats = tcpSocketStats
+			}()
 
 			ethtoolOpts := &EthtoolOpts{
 				errOrDropKeysOnly: true,
 				addZeroVal:        false,
 			}
 
-			ethReader := NewEthtoolReader(ethtoolOpts, ethHandle, unsupportedInterfacesCache)
+			ethHandle, err := ethtool.NewEthtool()
+			if err != nil {
+				lu.l.Error("Error while creating ethHandle: %v\n", zap.Error(err))
+				return fmt.Errorf("failed to create ethHandle: %w", err)
+			}
+
+			ethReader := NewEthtoolReader(ethtoolOpts, ethHandle, unsupportedInterfacesCache, gstrings, stats)
 			if ethReader == nil {
 				lu.l.Error("Error while creating ethReader")
 				return errors.New("error while creating ethReader")
 			}
 
-			err = ethReader.readAndUpdate()
-			if err != nil {
-				lu.l.Error("Reading ethTool failed", zap.Error(err))
-			}
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				err := ethReader.readAndUpdate()
+				if err != nil {
+					lu.l.Error("Reading ethTool failed", zap.Error(err))
+				}
+			}()
+
+			wg.Wait()
+			ethHandle.Close()
 		}
 	}
 }
